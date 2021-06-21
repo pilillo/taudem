@@ -8,5 +8,5 @@ Based on this existing [Dockerfile](https://github.com/WikiWatershed/docker-taud
 
 ## Info
 
-To build, create a tag of kind `GDALVERSION_OPENMPIVERSION_TAUDEMVERSION`, such as `2.3.0_1.8.1_5.3.8`.  
+To build, create a tag of kind `BASE#GDALVERSION_OPENMPIVERSION_TAUDEMVERSION`, such as `python:3.6#2.3.0_1.8.1_5.3.8`.  
 The image is built using github actions and pushed to dockerhub.
