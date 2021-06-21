@@ -27,7 +27,7 @@ RUN wget -qO- http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION
 
 # install openmpi
 RUN OPEN_MPI_SHORT_VERSION=${OPEN_MPI_VERSION%.*} \
-    wget -qO- https://www.open-mpi.org/software/ompi/v${OPEN_MPI_SHORT_VERSION}/downloads/openmpi-${OPEN_MPI_VERSION}.tar.gz \
+    && wget -qO- https://www.open-mpi.org/software/ompi/v${OPEN_MPI_SHORT_VERSION}/downloads/openmpi-${OPEN_MPI_VERSION}.tar.gz \
     | tar -xzC /usr/src \
     && cd /usr/src/openmpi-${OPEN_MPI_VERSION} \
     && ./configure \
@@ -42,5 +42,3 @@ RUN wget -qO- https://github.com/dtarb/TauDEM/archive/v${TAUDEM_VERSION}.tar.gz 
     && make
 RUN ln -s /usr/src/TauDEM-${TAUDEM_VERSION} /opt/taudem
 ENV PATH /opt/taudem:$PATH
-
-RUN pip install --upgrade pip
