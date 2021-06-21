@@ -1,0 +1,39 @@
+name: Docker Build CI
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: olegtarasov/get-tag@v2.1
+      id: tagName
+
+    - name: set env
+      run: |
+        echo "IMAGE=taudem" >> $GITHUB_ENV
+        TAG=${GIT_TAG_NAME:-$(date +%Y%m%d)}
+        echo "TAG=${TAG}" >> $GITHUB_ENV
+        # getting versions from tag as gdal_openmpi_taudem
+        echo "GDAL_VERSION=$(echo ${GIT_TAG_NAME}| cut -d'_' -f 1)" >> $GITHUB_ENV
+        echo "OPEN_MPI_VERSION=$(echo ${GIT_TAG_NAME}| cut -d'_' -f 2)" >> $GITHUB_ENV
+        echo "TAUDEM_VERSION=$(echo ${GIT_TAG_NAME}| cut -d'_' -f 3)" >> $GITHUB_ENV
+
+    - name: Docker Login
+      uses: docker/login-action@v1.8.0
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        logout: true
+
+    - name: Build the Docker image and push it to Dockerhub
+      run: |
+        TAG=$GIT_TAG_NAME
+        docker build --build-arg GDAL_VERSION --build-arg OPEN_MPI_VERSION --build-arg TAUDEM_VERSION --tag ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE }}:${{ env.TAG }} -f Dockerfile .
+        docker push ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE }}:${{ env.TAG }}
